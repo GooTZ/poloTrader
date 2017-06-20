@@ -16,7 +16,7 @@ class TradingStrategy(object):
 	btc = float(0.00118118)
 	eth = float(0)
 
-	payoffPercentage = 0.015
+	payoffPercentage = 0.0005
 	currentPrice = None
 	buyPrice = -1
 

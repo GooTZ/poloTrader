@@ -11,9 +11,6 @@ import SimpleEmaStrategy
 class DataProvider(object):
 	polo = None
 
-	# TODO: move the keys to an config file
-	#APIKey = "IZ0EEPVX-PYSSH7JE-AJVNG22F-YNHS2MSB"
-	#Secret = "e7226825aeac076d84ecbbba1fdeefd6ddca7639905a584ec303fb54bb6636f807907b4b40b86e111a815019160177696f0292d0666a8e6b8e5e0619af86f452"
 	APIKey = ""
 	Secret = ""
 
@@ -168,5 +165,5 @@ class DataProvider(object):
 			self.fetchNewChartData(period = 300, start = self.unixBackInTime(5))
 
 if __name__ == "__main__":
-	dataProvider = DataProvider(pair = "BTC_ETH", testing = True)
+	dataProvider = DataProvider(pair = "BTC_ETH", testing = False)
 	dataProvider.dataLoop()
