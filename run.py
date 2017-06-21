@@ -1,5 +1,6 @@
 import app
 import sys, getopt
+from app.util.TradingMode import TradingMode
 
 def main(argv):
 	mode = ''
@@ -14,8 +15,11 @@ def main(argv):
 			print('run.py -m <testing/livetesting>')
 			sys.exit()
 		elif opt in ("-m", "--mode"):
-			# TODO: check if mode is supported
-			mode = arg
+			if arg in TradingMode.__members__:
+				mode = TradingMode[arg]
+			else:
+				print(arg, " is not an supported mode!")
+				exit(2)
 
 	app.run(mode)
 

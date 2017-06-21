@@ -4,6 +4,7 @@ from app.strategies.BaseStrategy import BaseStrategy
 from app.util.TradingMode import TradingMode
 from app.util.DataProviders.DataProvider import DataProvider
 from app.util.DataProviders.TestingDataProvider import TestingDataProvider
+from app.util.DataProviders.LivetestingDataProvider import LivetestingDataProvider
 
 def run(mode):
 	# read the config
@@ -33,11 +34,9 @@ def run(mode):
 	# Currently only instantiates the sample strategy
 	strategy = MovingAverages()
 
-	# TODO
 	# register the strategy to the data provider
 	dataProvider.registerStrategy(strategy)
 
-	# TODO
 	# enter the data loop
 	dataProvider.enterDataLoop()
 
