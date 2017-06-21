@@ -10,7 +10,11 @@ import SimpleEmaStrategy
 
 class DataProvider(object):
 	polo = None
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> ee6eb37e8d8042ba7e176ba5b63d6c027807582a
 	APIKey = ""
 	Secret = ""
 
