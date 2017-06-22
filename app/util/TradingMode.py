@@ -4,3 +4,4 @@ class TradingMode(Enum):
 	TESTING = 1
 	LIVE_TESTING = 2
 	TRADING = 3
+	FETCH_DATA = 4

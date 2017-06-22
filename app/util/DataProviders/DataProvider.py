@@ -1,7 +1,9 @@
 import time
 import poloniex
+from collections import deque
 
 from app.util.Error import *
+from app.util.Timing import TimePeriod
 
 class DataProvider(object):
 
@@ -11,6 +13,10 @@ class DataProvider(object):
 
 	timeOfLastTickFetch = time.monotonic()
 	timeOfLastCandlestickFetch = time.monotonic()
+	timOfLastOrder = time.monotonic()
+
+	timePeriod = TimePeriod.T300
+	orderQueue = deque()
 
 	def __init__(self, APIKey, Secret):
 		self.polo = poloniex.Poloniex(APIKey, Secret)
@@ -29,7 +35,7 @@ class DataProvider(object):
 		self.registeredFunctions['initialize']()
 		timeOfLastTickFetch = time.monotonic()
 		timeOfLastCandlestickFetch = time.monotonic()
-		# TODO: init data from earlier, to give user historic data
+
 		try:
 			while True:
 				self.doTheLoop()
@@ -40,5 +46,11 @@ class DataProvider(object):
 			pass
 
 	def doTheLoop(self):
-		print("DataProvider.doTheLoop() is not supposed to be called, overwrite it in the used DataProvider!")
-		exit(2)
+		pass
+
+	def setTimePeriod(timePeriod):
+		# TODO: check if timePeriod is TimePeriod, log warning if not
+		self.timePeriod = timePeriod
+
+	def placeOrder(self, order):
+		print("placing order: ", order)

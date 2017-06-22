@@ -1,11 +1,13 @@
 from collections import deque
 from app.util.DataFrame import Data
+from operator import attrgetter
 
 class BaseStrategy(object):
 
 	registeredFunctions = list()
 	context = "context"
-	data = Data()
+	_data = Data()
+	data = property(attrgetter("_data"))
 	orderQueue = deque()
 	# queue.append("Graham")
 	# queue.popleft()
@@ -56,8 +58,11 @@ class BaseStrategy(object):
 	@param amount: The integer amount of shares or contracts. Positive means buy, negative means sell.
 	@return: An order id.
 	"""
-	def order(self, asset, amount):
-		return
+	def order(self, asset, amount, rate):
+		# TODO: include mode
+		order = (asset, rate, amount)
+		orderQueue.append(order)
+		return # TODO: get order id
 
 	"""
 	Place an order by desired value rather than desired number of shares.
@@ -68,7 +73,7 @@ class BaseStrategy(object):
 	@param amount: Floating point dollar value of shares or contracts. Positive means buy, negative means sell.
  	@return: An order id.
 	"""
-	def order_value(self, asset, amount):
+	def order_value(self, asset, amount, rate):
 		return
 
 	"""
