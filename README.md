@@ -32,7 +32,7 @@ The script can be executed in the following manner:
 
 `python run.py -m <mode>`
 
-with the following modes availible:
+with the following modes available:
 
 `TESTING`: Fetches data from csv files. Used for backtesting your algorithm.
 
