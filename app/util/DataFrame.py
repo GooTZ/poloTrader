@@ -1,4 +1,5 @@
 from operator import attrgetter
+import logging
 
 class Context(object):
 	portfolio = {}
@@ -15,7 +16,8 @@ class Data(object):
 		if (assets in self._current) and (fields in self._current[assets]):
 			return _current[assets][fields]
 		else:
-			# TODO: log 'data can not be found' on WARNING
+			warning = "Data " + str(assets) + " " + str(fields) + " could not be found!"
+			logging.warning(warning)
 			return None
 
 	def historic(self, assets, fields, bar_count, frequency):
@@ -24,7 +26,8 @@ class Data(object):
 			# TODO: Return in format of: dict[asset][bar_count][fields]
 			return _historic["""bar_count"""][assets]
 		else:
-			# TODO: log 'data can not be found' on WARNING
+			warning = "Data " + str(assets) + " " + str(fields) + " could not be found!"
+			logging.warning(warning)
 			return None
 
 	# TODO: implement this properly
