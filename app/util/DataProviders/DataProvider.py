@@ -1,6 +1,8 @@
 import time
 import poloniex
 
+from app.util.Error import *
+
 class DataProvider(object):
 
 	polo = None
@@ -18,13 +20,10 @@ class DataProvider(object):
 			if not func == None:
 				self.registeredFunctions[func.__name__] = func
 
-		# TODO: rework errors
 		if not ('initialize' in self.registeredFunctions):
-			print("ERROR: No initialize function got registered in the TradingStrategy!")
-			exit(2)
+			raise FunctionNotFoundError('initialize', "Function could not be found")
 		if not ('onData' in self.registeredFunctions):
-			print("ERROR: No onData function got registered in the TradingStrategy!")
-			exit(2)
+			raise FunctionNotFoundError('onData', "Function could not be found")
 
 	def enterDataLoop(self):
 		self.registeredFunctions['initialize']()
@@ -41,6 +40,5 @@ class DataProvider(object):
 			pass
 
 	def doTheLoop(self):
-		# TODO: better message
-		print("Not supposed to be called!")
+		print("DataProvider.doTheLoop() is not supposed to be called, overwrite it in the used DataProvider!")
 		exit(2)
