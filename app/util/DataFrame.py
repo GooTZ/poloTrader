@@ -1,4 +1,3 @@
-from operator import attrgetter
 import logging
 
 class Context(object):
@@ -36,27 +35,3 @@ class Data(object):
 		for asset in assets:
 			can_trade = True
 		return can_trade
-
-"""
-class Current(object):
-	_last = None
-	last = property(attrgetter("_last"))
-
-	_lowestAsk = None
-	lowestAsk = property(attrgetter("_lowestAsk"))
-
-	_highestBid = None
-	highestBid = property(attrgetter("_highestBid"))
-
-	_percentChange = None
-	percentChange = property(attrgetter("_percentChange"))
-
-	_baseVolume = None
-	baseVolume = property(attrgetter("_baseVolume"))
-
-	_quoteVolume = None
-	quoteVolume = property(attrgetter("_quoteVolume"))
-
-	def __init__(self):
-		return
-"""
