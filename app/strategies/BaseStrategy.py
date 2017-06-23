@@ -1,6 +1,7 @@
 from collections import deque
 from app.util.DataFrame import Data
 from operator import attrgetter
+from app.util.Order import Order, OrderMode
 
 class BaseStrategy(object):
 
@@ -46,22 +47,17 @@ class BaseStrategy(object):
 		return self.orderQueue
 
 	"""
-	Order tuple:
-	("currencyPair", "rate", "amount", "mode")
-	You may optionally set "fillOrKill", "immediateOrCancel", "postOnly" to 1. (as mode, use enum)
-	"""
-
-	"""
 	Places an order for the specified asset and the specified amount of shares
 
-	@param asset:  asset: An Equity object or a Future object.
+	@param asset: An Equity object or a Future object.
 	@param amount: The integer amount of shares or contracts. Positive means buy, negative means sell.
+	@param rate: The specified rate to trade at
+	@param mode: TODO
 	@return: An order id.
 	"""
-	def order(self, asset, amount, rate):
-		# TODO: include mode
-		order = (asset, rate, amount)
-		orderQueue.append(order)
+	def order(self, asset, amount, rate, mode = OrderMode.NORMAL):
+		order = Order(asset, rate, amount, mode)
+		self.orderQueue.append(order)
 		return # TODO: get order id
 
 	"""

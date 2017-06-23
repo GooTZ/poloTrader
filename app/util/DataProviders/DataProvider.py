@@ -1,5 +1,6 @@
 import time
 import poloniex
+import datetime
 from collections import deque
 
 from app.util.Error import *
@@ -13,7 +14,7 @@ class DataProvider(object):
 
 	timeOfLastTickFetch = time.monotonic()
 	timeOfLastCandlestickFetch = time.monotonic()
-	timOfLastOrder = time.monotonic()
+	timeOfLastOrder = time.monotonic()
 
 	timePeriod = TimePeriod.T300
 	orderQueue = deque()
@@ -53,4 +54,5 @@ class DataProvider(object):
 		self.timePeriod = timePeriod
 
 	def placeOrder(self, order):
-		print("placing order: ", order)
+		t = datetime.datetime.utcnow()
+		print(t, "placing order: ", str(order))

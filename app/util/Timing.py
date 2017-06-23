@@ -1,12 +1,12 @@
 import time
 import datetime
-from enum import Enum
+from enum import IntEnum
 
 def getHistoricTimestamp(day = 0, hour = 0, minute = 0):
 	time = datetime.datetime.utcnow() - datetime.timedelta(days = day, hours = hour, minutes = minute)
 	return time.timestamp()
 
-class TimePeriod(Enum):
+class TimePeriod(IntEnum):
 	T300 = int(300)
 	T900 = int(900)
 	T1800 = int(1800)
