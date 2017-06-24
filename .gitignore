@@ -1,7 +1,7 @@
 *.csv
 config.yaml
-src/__pycache__
 *.swp
+data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
