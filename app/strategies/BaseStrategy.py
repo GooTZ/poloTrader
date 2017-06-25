@@ -10,8 +10,6 @@ class BaseStrategy(object):
 	_data = Data()
 	data = property(attrgetter("_data"))
 	orderQueue = deque()
-	# queue.append("Graham")
-	# queue.popleft()
 
 	def __init__(self):
 		self.registerFunction(self.onData)
@@ -41,6 +39,9 @@ class BaseStrategy(object):
 	"""
 	def registerFunction(self, func):
 		self.registeredFunctions.append(func)
+
+	def getData(self):
+		return self._data
 
 	# TODO: implement order functions
 	def getOrderQueue(self):

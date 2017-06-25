@@ -8,12 +8,14 @@ class Data(object):
 
 	_historic = dict()
 
+	_portfolio = dict()
+
 	def __init__(self):
 		self._price = 100
 
 	def current(self, assets, fields):
 		if (assets in self._current) and (fields in self._current[assets]):
-			return _current[assets][fields]
+			return self._current[assets][fields]
 		else:
 			warning = "Data " + str(assets) + " " + str(fields) + " could not be found!"
 			logging.warning(warning)
@@ -29,9 +31,26 @@ class Data(object):
 			logging.warning(warning)
 			return None
 
-	# TODO: implement this properly
+	def portfolio(self, assets = None):
+		if assets == None:
+			return _portfolio
+
+		p = dict()
+		for asset in assets:
+			if asset in _portfolio:
+				p[asset] = _portfolio[asset]
+
+		return p
+
 	def can_trade(self, assets):
 		can_trade = True
 		for asset in assets:
-			can_trade = True
+			if !self._current[assets]['isFrozen']:
+				can_trade = False
 		return can_trade
+
+	def updateCurrent(self, pair, newCurrent):
+		self._current[pair] = newCurrent
+
+	def updatePortfolio(self, portfolio):
+		self._portfolio = portfolio
