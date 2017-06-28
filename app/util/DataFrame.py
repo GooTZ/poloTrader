@@ -6,7 +6,7 @@ class Context(object):
 class Data(object):
 	_current = dict()
 
-	_historic = dict()
+	_historic = []
 
 	_portfolio = dict()
 
@@ -26,14 +26,31 @@ class Data(object):
 		return p
 
 	def historic(self, assets, fields, bar_count, frequency):
-		# TODO: support the frequency properly
-		if (assets in self._historic) and (fields in self._historic[assets]) and (bar_count <= len(_historic)):
-			# TODO: Return in format of: dict[asset][bar_count][fields]
-			return _historic["""bar_count"""][assets]
-		else:
-			warning = "Data " + str(assets) + " " + str(fields) + " could not be found!"
-			logging.warning(warning)
-			return None
+		# TODO: support frequency properly
+		p = dict()
+		hist_len = len(self._historic)
+		for i in reversed(range(0, hist_len)):
+			for asset in assets:
+				#p[asset] = dict()
+				fields_dict = dict()
+				for field in fields:
+					if (bar_count > hist_len):
+						warning = str(bar_count) + " is out of range of the history!"
+						logging.warning(warning)
+						return None
+
+					if not ((asset in self._historic[i]) and (field in self._historic[i][asset])):
+						warning = "Data " + str(asset) + "." + str(field) + " could not be found!"
+						logging.warning(warning)
+						return None
+
+					fields_dict[field] = self._historic[i][asset][field]
+
+				t = self._historic[i][asset]['date']
+				if (t not in p):
+					p[t] = dict()
+				p[t][asset] = fields_dict
+		return p
 
 	def portfolio(self, assets = None):
 		if assets == None:
@@ -54,7 +71,7 @@ class Data(object):
 		return can_trade
 
 	def updateCurrent(self, pair, newCurrent):
-		#self._historic.append(self._current)
+		self._historic.append(self._current)
 		self._current[pair] = newCurrent
 		self._current["BTC_LTC"] = newCurrent
 
