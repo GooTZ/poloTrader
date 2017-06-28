@@ -15,16 +15,16 @@ $ git clone https://github.com/GooTZ/poloTrader.git
 $ cd poloTrader
 
 # Install dependencies
-$ python setup.py
+$ python setup.py install
 ```
 
 ### Configuration
 
 In order to use the trading capabilities you first have to set up the script to use your Poloniex APIKey and Secret.
 
-`cp example-config.yaml config.yaml`
+`cp example-config.toml config.toml`
 
-Edit the `config.yaml` and enter your APIKey and Secret.
+Edit the `config.toml` and enter your APIKey and Secret.
 
 ### Usage
 
@@ -51,6 +51,7 @@ This software uses several open source packages.
 
 * [Python 3](https://www.python.org/)
 * [python-poloniex](https://github.com/s4w3d0ff/python-poloniex)
+* [TOML](https://github.com/uiri/toml)
 
 Also special thanks to:
 * [Poloniex](https://poloniex.com/) for providing the trading platform and API.

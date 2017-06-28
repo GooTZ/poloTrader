@@ -1,5 +1,5 @@
 *.csv
-config.yaml
+config.toml
 *.swp
 data/
 

@@ -1,0 +1,9 @@
+[api]
+
+key = "your-key-here"
+secret = "your-secret-here"
+
+[misc]
+
+strategy = "MovingAverages"
+dataDirectory = "data"

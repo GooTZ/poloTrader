@@ -1,4 +1,4 @@
-import yaml
+import toml
 import os.path
 import logging
 
@@ -16,29 +16,29 @@ from app.util.Error import *
 
 def run(mode, strategyName = None):
 	# check if config file exists
-	if not os.path.isfile('config.yaml'):
-		raise FileNotFoundError("File 'config.yaml' not found!")
+	if not os.path.isfile('config.toml'):
+		raise FileNotFoundError("File 'config.toml' not found!")
 	# read the config
-	with open('config.yaml', 'r') as f:
-		doc = yaml.load(f)
+	with open("config.toml") as conffile:
+		config = toml.loads(conffile.read())
 
 	# check if api key and secret exist in the config
-	if not (("api" in doc) or ("key" in doc["api"]) or ("secret" in doc["api"])):
-		error = "Poloniex APIKey and Secret are not properly configured in 'config.yaml'!"
+	if not (("api" in config) or ("key" in config["api"]) or ("secret" in config["api"])):
+		error = "Poloniex APIKey and Secret are not properly configured in 'config.toml'!"
 		raise ConfigError(error)
 
 	# get the api key and secret
-	APIKey = doc["api"]["key"]
-	Secret = doc["api"]["secret"]
+	APIKey = config["api"]["key"]
+	Secret = config["api"]["secret"]
 	# get the data directory from the config
-	dataDir = doc["dataDirectory"]
+	dataDir = config["misc"]["dataDirectory"]
 
 	if strategyName == None:
-		if not ("strategy" in doc):
-			error = "No strategy specified in neither the command or in 'config.yaml'!"
+		if not ("strategy" in config["misc"]):
+			error = "No strategy specified in neither the command or in 'config.toml'!"
 			raise ConfigError(error)
 		else:
-			strategyName = doc["strategy"]
+			strategyName = config["misc"]["strategy"]
 
 	# Shared Variables between the threads
 	dataQueue = Queue()
