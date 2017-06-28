@@ -2,3 +2,4 @@ api:
      key: your-key-here
      secret: your-secret-here
 strategy: MovingAverages
+dataDirectory: data

@@ -9,6 +9,8 @@ from app.util.Timing import TimePeriod
 
 class DataProvider(Thread):
 
+	DATA_DIR = ""
+
 	polo = None
 
 	# Thread-shared orderQueue
@@ -30,12 +32,14 @@ class DataProvider(Thread):
 
 	secondsPassed = 0
 
-	def __init__(self, APIKey, Secret, dataQueue, orderQueue, instructionQueue):
+	def __init__(self, APIKey, Secret, dataDir, dataQueue, orderQueue, instructionQueue):
 		self.polo = poloniex.Poloniex(APIKey, Secret)
 
 		self.dataQueue = dataQueue
 		self.orderQueue = orderQueue
 		self.instructionQueue = instructionQueue
+
+		self.DATA_DIR = dataDir
 
 		Thread.__init__(self)
 		self.daemon = True

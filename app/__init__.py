@@ -30,6 +30,8 @@ def run(mode, strategyName = None):
 	# get the api key and secret
 	APIKey = doc["api"]["key"]
 	Secret = doc["api"]["secret"]
+	# get the data directory from the config
+	dataDir = doc["dataDirectory"]
 
 	if strategyName == None:
 		if not ("strategy" in doc):
@@ -47,13 +49,13 @@ def run(mode, strategyName = None):
 	# instantiate a corresponding data provider
 	dataProvider = None
 	if (mode == TradingMode.TESTING):
-		dataProvider = TestingDataProvider(APIKey, Secret, dataQueue, orderQueue, instructionQueue)
+		dataProvider = TestingDataProvider(APIKey, Secret, dataDir, dataQueue, orderQueue, instructionQueue)
 	elif (mode == TradingMode.LIVE_TESTING):
-		dataProvider = LivetestingDataProvider(APIKey, Secret, dataQueue, orderQueue, instructionQueue)
+		dataProvider = LivetestingDataProvider(APIKey, Secret, dataDir, dataQueue, orderQueue, instructionQueue)
 	elif (mode == TradingMode.TRADING):
-		dataProvider = TradingDataProvider(APIKey, Secret, dataQueue, orderQueue, instructionQueue)
+		dataProvider = TradingDataProvider(APIKey, Secret, dataDir, dataQueue, orderQueue, instructionQueue)
 	elif (mode == TradingMode.FETCH_DATA):
-		dataProvider = HistoryDataProvider(APIKey, Secret, dataQueue, orderQueue, instructionQueue)
+		dataProvider = HistoryDataProvider(APIKey, Secret, dataDir, dataQueue, orderQueue, instructionQueue)
 	else:
 		raise UnsupportedModeError(mode, "The given mode is not supported!")
 

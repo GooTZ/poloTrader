@@ -8,9 +8,6 @@ from app.util.Timing import TimePeriod
 
 class HistoryDataProvider(DataProvider):
 
-	# TODO: read from config
-	DATA_DIR = "./data"
-
 	datafilePath = ""
 	timefilePath = ""
 	newfile = None
@@ -28,8 +25,8 @@ class HistoryDataProvider(DataProvider):
 
 	pair = ""
 
-	def __init__(self, APIKey, Secret, dataQueue, orderQueue, instructionQueue):
-		super().__init__(APIKey, Secret, dataQueue, orderQueue, instructionQueue)
+	def __init__(self, APIKey, Secret, dataDir, dataQueue, orderQueue, instructionQueue):
+		super().__init__(APIKey, Secret, dataDir, dataQueue, orderQueue, instructionQueue)
 		self.init()
 
 	def init(self):

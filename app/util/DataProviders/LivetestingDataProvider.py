@@ -7,8 +7,8 @@ class LivetestingDataProvider(DataProvider):
 
 	candle = {}
 
-	def __init__(self, APIKey, Secret, dataQueue, orderQueue, instructionQueue):
-		super().__init__(APIKey, Secret, dataQueue, orderQueue, instructionQueue)
+	def __init__(self, APIKey, Secret, dataDir, dataQueue, orderQueue, instructionQueue):
+		super().__init__(APIKey, Secret, dataDir, dataQueue, orderQueue, instructionQueue)
 
 	def doTheLoop(self):
 		# Once a second print the fetching-data string
