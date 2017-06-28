@@ -2,8 +2,8 @@ from app.strategies.BaseStrategy import BaseStrategy
 
 class MovingAverages(BaseStrategy):
 
-	def __init__(self):
-		super().__init__()
+	def __init__(self, dataQueue, orderQueue):
+		super().__init__(dataQueue, orderQueue)
 		self.registerFunction(self.onEnd)
 
 	"""
@@ -13,10 +13,10 @@ class MovingAverages(BaseStrategy):
 		return
 
 	"""
-	Called every configured tick.
+	Called every time new data is available, what is about once a second.
 	"""
 	def onData(self):
-		print("MovingAverages.onData() -> ", self.data.historic("BTC_ETH", "open", 1, 300))
+		print("MovingAverages.onData() -> ", self.data.historic(["BTC_ETH", "BTC_LTC"], ['open', 'close'], 1, 0))
 		self.order("BTC_ETH", 1, 0.11)
 		return
 
