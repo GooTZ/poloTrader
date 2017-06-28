@@ -22,10 +22,11 @@ setup(
 	description = "A Poloniex altcoin trading software",
 
 	dependency_links = [
-		"https://github.com/s4w3d0ff/python-poloniex/archive/v0.4.5.zip"
+		"https://github.com/s4w3d0ff/python-poloniex/archive/v0.4.5.tar.gz#egg=poloniex-0.4.5"
 		],
 
 	install_requires = [
-		'toml'
+		'toml',
+		'poloniex>=0.4.5'
 	]
 )
