@@ -2,6 +2,8 @@ import yaml
 import os.path
 import logging
 
+from queue import LifoQueue as Queue
+
 from app.strategies.MovingAverages import MovingAverages
 from app.strategies.BaseStrategy import BaseStrategy
 from app.util.TradingMode import TradingMode
@@ -36,29 +38,39 @@ def run(mode, strategyName = None):
 		else:
 			strategyName = doc["strategy"]
 
+	# Shared Variables between the threads
+	dataQueue = Queue()
+	orderQueue = Queue()
+	instructionQueue = Queue()
+
 	# check which mode we are trading in
 	# instantiate a corresponding data provider
 	dataProvider = None
 	if (mode == TradingMode.TESTING):
-		dataProvider = TestingDataProvider(APIKey, Secret)
+		dataProvider = TestingDataProvider(APIKey, Secret, dataQueue, orderQueue, instructionQueue)
 	elif (mode == TradingMode.LIVE_TESTING):
-		dataProvider = LivetestingDataProvider(APIKey, Secret)
+		dataProvider = LivetestingDataProvider(APIKey, Secret, dataQueue, orderQueue, instructionQueue)
 	elif (mode == TradingMode.TRADING):
-		dataProvider = TradingDataProvider(APIKey, Secret)
+		dataProvider = TradingDataProvider(APIKey, Secret, dataQueue, orderQueue, instructionQueue)
 	elif (mode == TradingMode.FETCH_DATA):
-		dataProvider = HistoryDataProvider(APIKey, Secret)
+		dataProvider = HistoryDataProvider(APIKey, Secret, dataQueue, orderQueue, instructionQueue)
 	else:
 		raise UnsupportedModeError(mode, "The given mode is not supported!")
 
-
 	# Get the configured Strategy and instantiate it
 	strategyManager = StrategyManager()
-	strategy = strategyManager.loadStrategy(strategyName)
+	strategy = strategyManager.loadStrategy(strategyName)(dataQueue, orderQueue)
 
-	# register the strategy to the data provider
-	dataProvider.registerStrategy(strategy)
+	# Start both threads
+	dataProvider.start()
+	strategy.start()
 
-	# enter the data loop
-	dataProvider.enterDataLoop()
+	# Enter Infinite loop until the user breaks it
+	try:
+		while True:
+			continue
+	except KeyboardInterrupt:
+		print("")
+		pass
 
 	exit()

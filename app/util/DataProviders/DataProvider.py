@@ -2,13 +2,21 @@ import time
 import poloniex
 import datetime
 from collections import deque
+from threading import Thread
 
 from app.util.Error import *
 from app.util.Timing import TimePeriod
 
-class DataProvider(object):
+class DataProvider(Thread):
 
 	polo = None
+
+	# Thread-shared orderQueue
+	orderQueue = None
+	# Thread-shared instructionQueue
+	instructionQueue = None
+	# Thread-shared dataQueue
+	dataQueue = None
 
 	registeredFunctions = {}
 
@@ -17,14 +25,23 @@ class DataProvider(object):
 	timeOfLastOrder = time.monotonic()
 
 	timePeriod = TimePeriod.T300
-	orderQueue = deque()
 
 	dataFrame = None
 
 	secondsPassed = 0
 
-	def __init__(self, APIKey, Secret):
+	def __init__(self, APIKey, Secret, dataQueue, orderQueue, instructionQueue):
 		self.polo = poloniex.Poloniex(APIKey, Secret)
+
+		self.dataQueue = dataQueue
+		self.orderQueue = orderQueue
+		self.instructionQueue = instructionQueue
+
+		Thread.__init__(self)
+		self.daemon = True
+
+	def run(self):
+		self.enterDataLoop()
 
 	"""
 	Sets the connection between the chosen strategy and the dataprovider up.
@@ -50,21 +67,16 @@ class DataProvider(object):
 	@return: None.
 	"""
 	def enterDataLoop(self):
-		self.registeredFunctions['initialize']()
-		timeOfLastTickFetch = time.monotonic()
-		timeOfLastCandlestickFetch = time.monotonic()
+		#self.registeredFunctions['initialize']()
+		self.timeOfLastTickFetch = time.monotonic()
+		self.timeOfLastCandlestickFetch = time.monotonic()
 
-		try:
-			while True:
-				self.doTheLoop()
-		except KeyboardInterrupt:
-			print("")
-			if 'onEnd' in self.registeredFunctions:
-				self.registeredFunctions['onEnd']()
-			pass
+		while True:
+			self.doTheLoop()
+
 
 	"""
-	A function stub, used so the DataProvider class does nothing. Other DataProvider classes must overwrite this function
+	A function stub, used so the DataProvider class, does nothing. Other DataProvider classes must overwrite this function
 
 	@return: None.
 	"""

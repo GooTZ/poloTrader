@@ -28,8 +28,8 @@ class HistoryDataProvider(DataProvider):
 
 	pair = ""
 
-	def __init__(self, APIKey, Secret):
-		super().__init__(APIKey, Secret)
+	def __init__(self, APIKey, Secret, dataQueue, orderQueue, instructionQueue):
+		super().__init__(APIKey, Secret, dataQueue, orderQueue, instructionQueue)
 		self.init()
 
 	def init(self):

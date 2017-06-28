@@ -33,19 +33,19 @@ class Data(object):
 
 	def portfolio(self, assets = None):
 		if assets == None:
-			return _portfolio
+			return self._portfolio
 
 		p = dict()
 		for asset in assets:
-			if asset in _portfolio:
-				p[asset] = _portfolio[asset]
+			if asset in self._portfolio:
+				p[asset] = self._portfolio[asset]
 
 		return p
 
 	def can_trade(self, assets):
 		can_trade = True
 		for asset in assets:
-			if !self._current[assets]['isFrozen']:
+			if not self._current[assets]['isFrozen']:
 				can_trade = False
 		return can_trade
 

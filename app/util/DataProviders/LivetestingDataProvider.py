@@ -6,13 +6,12 @@ import app.util.Timing
 class LivetestingDataProvider(DataProvider):
 
 	candle = {}
-	c = 0
 
-	def __init__(self, APIKey, Secret):
-		super().__init__(APIKey, Secret)
+	def __init__(self, APIKey, Secret, dataQueue, orderQueue, instructionQueue):
+		super().__init__(APIKey, Secret, dataQueue, orderQueue, instructionQueue)
 
 	def doTheLoop(self):
-		# Once a second print the wip string
+		# Once a second print the fetching-data string
 		timeofThisLoop = time.monotonic()
 		delta = self.timeOfLastOrder - timeofThisLoop
 		if delta > -1:
@@ -24,8 +23,8 @@ class LivetestingDataProvider(DataProvider):
 		t = int(time.time())
 		self.appendToCandle(t, tickerData)
 
-		if (len(self.orderQueue) > 0):
-			order = self.orderQueue.popleft()
+		if not (self.orderQueue.empty()):
+			order = self.orderQueue.get()
 			self.placeOrder(order)
 
 		deltaMinute = self.timeOfLastTickFetch - timeofThisLoop
@@ -36,18 +35,24 @@ class LivetestingDataProvider(DataProvider):
 		self.appendCandleToData("BTC_ETH", self.candle)
 		self.candle.clear()
 
-		self.registeredFunctions['onData']()
-
-		if 'getOrderQueue' in self.registeredFunctions:
-			self.orderQueue = self.registeredFunctions['getOrderQueue']()
-
 	def appendCandleToData(self, pair, candle):
-		dataDict = {'date': candle['date'], 'low': candle['low'], 'open': candle['open'], 'average': candle['average'] / self.c,
-		'close': candle['close'], 'high': candle['high'], 'volume': candle['volume'] / self.c, 'isFrozen': candle['isFrozen']}
-		self.dataFrame.updateCurrent(pair, dataDict)
-		self.c = 0
+		dataDict = {'date': candle['date'], 'low': candle['low'], 'open': candle['open'], 'average': candle['average'] / self.secondsPassed,
+		'close': candle['close'], 'high': candle['high'], 'volume': candle['volume'] / self.secondsPassed, 'isFrozen': candle['isFrozen']}
+		self.dataQueue.put(("Current", dataDict))
+		self.secondsPassed = 0
 
 
 	def getTickerData(self, pair):
 		tickerData = self.polo.returnTicker()
 		return tickerData[pair]
+
+	"""
+	The base function for placing an order on poloniex. Will be overriden by some DataProviders. Otherwise just prints the placed order.
+
+	@param order: A tuple with order informations
+	@return: None
+	"""
+	def placeOrder(self, order):
+		super().placeOrder(order)
+		balances = self.polo.returnBalances()
+		self.dataQueue.put(("Balances", balances))

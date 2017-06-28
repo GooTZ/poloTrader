@@ -12,4 +12,4 @@ class StrategyManager(object):
 		# Load "module.submodule.MyClass"
 		strat = getattr(importlib.import_module("app.strategies." + name), name)
 		# Instantiate the class (pass arguments to the constructor, if needed)
-		return strat()
+		return strat

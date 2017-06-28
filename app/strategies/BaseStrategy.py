@@ -1,20 +1,43 @@
 from collections import deque
+from threading import Thread
 from app.util.DataFrame import Data
 from operator import attrgetter
 from app.util.Order import Order, OrderMode
 
-class BaseStrategy(object):
+class BaseStrategy(Thread):
 
 	registeredFunctions = list()
-	context = "context"
 	_data = Data()
 	data = property(attrgetter("_data"))
-	orderQueue = deque()
 
-	def __init__(self):
+	# Thread-shared orderQueue
+	orderQueue = None
+	# Thread-shared instructionQueue
+	instrucdataDicttionQueue = None
+	# Thread-shared dataQueue
+	dataQueue = None
+
+	def __init__(self, dataQueue, orderQueue):
 		self.registerFunction(self.onData)
 		self.registerFunction(self.initialize)
 		self.registerFunction(self.getOrderQueue)
+
+		self.dataQueue = dataQueue
+		self.orderQueue = orderQueue
+		#self.instructionQueue = instructionQueue
+
+		Thread.__init__(self)
+		self.daemon = True
+
+	def run(self):
+		while True:
+			if not self.dataQueue.empty():
+				d = self.dataQueue.get()
+				if (d[0] == "Current"):
+					self._data.updateCurrent("BTC_ETH", d[1])
+				elif (d[0] == "Balances"):
+					self._data.updatePortfolio(d[1])
+				self.onData()
 
 	"""
 	Called once at the start of the algorithm.
@@ -50,7 +73,7 @@ class BaseStrategy(object):
 	"""
 	Places an order for the specified asset and the specified amount of shares
 
-	@param asset: An Equity object or a Future object.
+	@param asset: The currency pair to trade with.
 	@param amount: The integer amount of shares or contracts. Positive means buy, negative means sell.
 	@param rate: The specified rate to trade at
 	@param mode: TODO
@@ -58,7 +81,7 @@ class BaseStrategy(object):
 	"""
 	def order(self, asset, amount, rate, mode = OrderMode.NORMAL):
 		order = Order(asset, rate, amount, mode)
-		self.orderQueue.append(order)
+		self.orderQueue.put(order)
 		return # TODO: get order id
 
 	"""
@@ -66,30 +89,34 @@ class BaseStrategy(object):
 	Placing a negative order value will result in selling the given value.
 	Orders are always truncated to whole shares or contracts.
 
-	@param asset: An Equity object or a Future object.
-	@param amount: Floating point dollar value of shares or contracts. Positive means buy, negative means sell.
+	@param asset: The currency pair to trade with.
+	@param amount: Floating point base currency value of the secondary currency. Positive means buy, negative means sell.
+	@param rate:
  	@return: An order id.
 	"""
-	def order_value(self, asset, amount, rate):
+	def order_value(self, asset, amount, rate, mode = OrderMode.NORMAL):
+		amnt = float(amount / rate)
+		order = Order(asset, rate, amnt, mode)
+		self.orderQueue.put(order)
 		return
 
 	"""
 	Places an order in the specified asset corresponding to the given percent of
 	the current portfolio value, which is the sum of the positions value and
 	ending cash balance. Placing a negative percent order will result in selling
-	the given percent of the current portfolio value. Orders are always truncated
-	to whole shares or contracts. Percent must be expressed as a decimal
-	(0.50 means 50%).
+	the given percent of the current portfolio value. Percent must be expressed as a decimal (0.50 means 50%).
 
 	The value of a position in a futures contract is computed to be the unit
 	price times the number of units per contract (otherwise known as the size
 	of the contract).
 
-	@param asset: An Equity object or a Future object.
+	@param asset: The currency pair to trade with.
 	@param amount: The floating point percentage of portfolio value to order. Positive means buy, negative means sell.
  	@return: An order id.
 	"""
-	def order_percent(self, asset, amount):
+	def order_percent(self, asset, amount, mode = OrderMode.NORMAL):
+		order = None
+		self.orderQueue.put(order)
 		return
 
 	"""
@@ -100,11 +127,13 @@ class BaseStrategy(object):
 	currently held. Placing a negative target order will result in a short
 	position equal to the negative number specified.
 
-	@param asset: An Equity object or a Future object.
+	@param asset: The currency pair to trade with.
 	@param amount: The integer amount of target shares or contracts. Positive means buy, negative means sell.
  	@return: An order id, or None if there is no difference between the target position and current position.
 	"""
-	def order_target(self, asset, amount):
+	def order_target(self, asset, amount, mode = OrderMode.NORMAL):
+		order = None
+		self.orderQueue.put(order)
 		return
 
 	"""
@@ -120,11 +149,13 @@ class BaseStrategy(object):
 	price times the number of units per contract (otherwise known as the size
 	of the contract).
 
-	@param asset: An Equity object or a Future object.
+	@param asset: The currency pair to trade with.
 	@param amount: Floating point dollar value of shares or contracts. Positive means buy, negative means sell.
  	@return: An order id, or None if there is no difference between the target position and current position.
 	"""
-	def order_target_value(self, asset, amount):
+	def order_target_value(self, asset, amount, mode = OrderMode.NORMAL):
+		order = None
+		self.orderQueue.put(order)
 		return
 
 	"""
@@ -142,13 +173,15 @@ class BaseStrategy(object):
 	price times the number of units per contract (otherwise known as the size
 	of the contract).
 
-	@param asset: An Equity object or a Future object.
+	@param asset: The currency pair to trade with.
 	@param percent: The portfolio percentage allocated to the asset. Positive
 		means buy, negative means sell.
  	@return: An order id, or None if there is no difference between the target
 		position and current position.
 	"""
 	def order_target_percent(self, asset, percent):
+		order = None
+		self.orderQueue.put(order)
 		return
 
 	"""
