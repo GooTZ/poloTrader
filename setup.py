@@ -14,9 +14,6 @@ setup(
 	# Packages
 	packages=["app"],
 
-	# Include additional files into the package
-	include_package_data=True,
-
 	# Details
 	url="https://github.com/GooTZ/poloTrader",
 
@@ -24,14 +21,7 @@ setup(
 	# license="LICENSE.txt",
 	description="A Poloniex altcoin trading software",
 
-	# long_description=open("README.txt").read(),
-
-	# Dependent packages (distributions)
-	install_requires=[
-		'poloniex'
-	],
-
 	dependency_links=[
-		'https://github.com/s4w3d0ff/python-poloniex/archive/v0.4.4.zip'
-	]
+		"https://github.com/s4w3d0ff/python-poloniex/archive/v0.4.5.zip"
+		]
 )
