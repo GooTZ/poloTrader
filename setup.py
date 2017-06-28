@@ -1,27 +1,31 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
 	# Application name:
-	name="poloTrader",
+	name = "poloTrader",
 
 	# Version number (initial):
-	version="0.1.0",
+	version = "0.1.0",
 
 	# Application author details:
-	author="Domenik Weber",
-	author_email="domenik.weber@stud.uni-hannover.de",
+	author = "Domenik Weber",
+	author_email = "domenik.weber@stud.uni-hannover.de",
 
 	# Packages
-	packages=["app"],
+	packages = ["app"],
 
 	# Details
-	url="https://github.com/GooTZ/poloTrader",
+	url = "https://github.com/GooTZ/poloTrader",
 
 	#
 	# license="LICENSE.txt",
-	description="A Poloniex altcoin trading software",
+	description = "A Poloniex altcoin trading software",
 
-	dependency_links=[
+	dependency_links = [
 		"https://github.com/s4w3d0ff/python-poloniex/archive/v0.4.5.zip"
-		]
+		],
+
+	install_requires = [
+		'toml'
+	]
 )
