@@ -14,12 +14,16 @@ class Data(object):
 		self._price = 100
 
 	def current(self, assets, fields):
-		if (assets in self._current) and (fields in self._current[assets]):
-			return self._current[assets][fields]
-		else:
-			warning = "Data " + str(assets) + " " + str(fields) + " could not be found!"
-			logging.warning(warning)
-			return None
+		p = dict()
+		for asset in assets:
+			for field in fields:
+				if (asset in self._current) and (field in self._current[asset]):
+					p[asset] = self._current[asset]
+				else:
+					warning = "Data " + str(assets) + " " + str(fields) + " could not be found!"
+					logging.warning(warning)
+					return None
+		return p
 
 	def historic(self, assets, fields, bar_count, frequency):
 		# TODO: support the frequency properly
@@ -50,7 +54,9 @@ class Data(object):
 		return can_trade
 
 	def updateCurrent(self, pair, newCurrent):
+		#self._historic.append(self._current)
 		self._current[pair] = newCurrent
+		self._current["BTC_LTC"] = newCurrent
 
 	def updatePortfolio(self, portfolio):
 		self._portfolio = portfolio
