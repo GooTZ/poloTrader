@@ -16,7 +16,7 @@ class MovingAverages(BaseStrategy):
 	Called every time new data is available, what is about once a second.
 	"""
 	def onData(self):
-		print("MovingAverages.onData() -> ", self.data.historic(["BTC_ETH", "BTC_LTC"], ['open', 'close'], 1, 0))
+		print("MovingAverages.onData() -> ", self.data.current(["BTC_ETH"], ['average']))
 		self.order("BTC_ETH", 1, 0.11)
 		return
 
