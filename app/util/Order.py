@@ -1,10 +1,10 @@
 from enum import Enum
 
 class OrderMode(Enum):
-	NORMAL = 0
-	FILL_OR_KILL = 1
-	IMMEDIATE_OR_CACNEL = 2
-	POST_ONLY = 3
+	NORMAL = ""
+	FILL_OR_KILL = "fillOrKill"
+	IMMEDIATE_OR_CACNEL = "immediateOrCancel"
+	POST_ONLY = "postOnly"
 
 class Order(object):
 
@@ -24,7 +24,7 @@ class Order(object):
 		self.mode = mode
 
 	def __str__(self):
-		s = "(Order: " + str(self.pair) + ", " + str(self.rate) + ", " + str(self.amount) + ", " + str(self.mode) + ")"
+		s = "(Order: " + str(self.pair) + ", " + str(self.rate) + ", " + str(self.amount) + ", " + str(self.mode.value) + ")"
 		return s
 
 	def setOrderNumber(self, number):
