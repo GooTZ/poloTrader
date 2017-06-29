@@ -34,7 +34,7 @@ class BaseStrategy(Thread):
 			if not self.dataQueue.empty():
 				d = self.dataQueue.get()
 				if (d[0] == "Current"):
-					self._data.updateCurrent("BTC_ETH", d[1])
+					self._data.updateCurrent(d[1])
 				elif (d[0] == "Balances"):
 					self._data.updatePortfolio(d[1])
 				self.onData()

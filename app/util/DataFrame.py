@@ -25,7 +25,9 @@ class Data(object):
 		for asset in assets:
 			for field in fields:
 				if (asset in self._current) and (field in self._current[asset]):
-					p[asset] = self._current[asset]
+					if not asset in p:
+						p[asset] = {}
+					p[asset][field] = self._current[asset][field]
 				else:
 					warning = "Data " + str(assets) + " " + str(fields) + " could not be found!"
 					logging.warning(warning)
@@ -99,10 +101,10 @@ class Data(object):
 				can_trade[asset] = True
 		return can_trade
 
-	def updateCurrent(self, pair, newCurrent):
+	def updateCurrent(self, newCurrent):
 		self._historic.append(self._current)
-		self._current[pair] = newCurrent
-		self._current["BTC_LTC"] = newCurrent
+		for pair in newCurrent:
+			self._current[pair] = newCurrent[pair]
 
 	def updatePortfolio(self, portfolio):
 		self._portfolio = portfolio

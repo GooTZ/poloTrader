@@ -5,8 +5,6 @@ import app.util.Timing
 
 class LivetestingDataProvider(DataProvider):
 
-	candle = {}
-
 	def __init__(self, APIKey, Secret, dataDir, dataQueue, orderQueue, instructionQueue):
 		super().__init__(APIKey, Secret, dataDir, dataQueue, orderQueue, instructionQueue)
 
@@ -19,9 +17,10 @@ class LivetestingDataProvider(DataProvider):
 		self.timOfLastOrder = timeofThisLoop
 		print("Fetching data " + self.getSpinner(), end = "\r")
 
-		tickerData = self.getTickerData("BTC_ETH")
+		tickerData = self.getTickerData()
 		t = int(time.time())
-		self.appendToCandle(t, tickerData)
+		for pair in tickerData:
+			self.appendToCandle(t, pair, tickerData[pair])
 
 		if not (self.orderQueue.empty()):
 			order = self.orderQueue.get()
@@ -32,19 +31,19 @@ class LivetestingDataProvider(DataProvider):
 			return # next iteration if not enough time passed
 		self.timeOfLastTickFetch = timeofThisLoop
 
-		self.appendCandleToData("BTC_ETH", self.candle)
-		self.candle.clear()
+		print("appending data1")
+		self.appendCandlesToData()
+		self.currentCandles = {}
 
-	def appendCandleToData(self, pair, candle):
-		dataDict = {'date': candle['date'], 'low': candle['low'], 'open': candle['open'], 'average': candle['average'] / self.secondsPassed,
-		'close': candle['close'], 'high': candle['high'], 'volume': candle['volume'] / self.secondsPassed, 'isFrozen': candle['isFrozen']}
-		self.dataQueue.put(("Current", dataDict))
+	def appendCandlesToData(self):
+		outrDict = {}
+		for pair in self.currentCandles:
+			candle = self.currentCandles[pair]
+			dataDict = {'date': candle['date'], 'low': candle['low'], 'open': candle['open'], 'average': candle['average'] / self.secondsPassed,
+			'close': candle['close'], 'high': candle['high'], 'volume': candle['volume'] / self.secondsPassed, 'isFrozen': candle['isFrozen']}
+			outrDict[pair] = dataDict
+		self.dataQueue.put(("Current", outrDict))
 		self.secondsPassed = 0
-
-
-	def getTickerData(self, pair):
-		tickerData = self.polo.returnTicker()
-		return tickerData[pair]
 
 	"""
 	The base function for placing an order on poloniex. Will be overriden by some DataProviders. Otherwise just prints the placed order.

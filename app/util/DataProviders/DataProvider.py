@@ -32,6 +32,8 @@ class DataProvider(Thread):
 
 	secondsPassed = 0
 
+	currentCandles = {}
+
 	def __init__(self, APIKey, Secret, dataDir, dataQueue, orderQueue, instructionQueue):
 		self.polo = poloniex.Poloniex(APIKey, Secret)
 
@@ -87,10 +89,14 @@ class DataProvider(Thread):
 	def doTheLoop(self):
 		pass
 
-	# TODO: what is this supposed to do?
-	def setTimePeriod(timePeriod):
-		# TODO: check if timePeriod is TimePeriod, log warning if not
-		self.timePeriod = timePeriod
+	"""
+	Returns the current ticker data from poloniex.
+
+	@returns: Dictionary of pairs containing fields.
+	"""
+	def getTickerData(self):
+		tickerData = self.polo.returnTicker()
+		return tickerData
 
 	"""
 	The base function for placing an order on poloniex. Will be overriden by some DataProviders. Otherwise just prints the placed order.
@@ -121,37 +127,40 @@ class DataProvider(Thread):
 	@param data: A dict of the latest ticker data.
 	@return: None.
 	"""
-	def appendToCandle(self, time, data):
-		self.candle['date'] = time
+	def appendToCandle(self, time, pair, data):
+		if not pair in self.currentCandles:
+			self.currentCandles[pair] = {}
 
-		if not 'low' in self.candle:
-			self.candle['low'] = float(data['last'])
-		elif float(data['lowestAsk']) < self.candle['low']:
-			self.candle['low'] = float(data['lowestAsk'])
+		self.currentCandles[pair]['date'] = time
 
-		if not 'open' in self.candle:
-			self.candle['open'] = float(data['last'])
+		if not 'low' in self.currentCandles[pair]:
+			self.currentCandles[pair]['low'] = float(data['last'])
+		elif float(data['lowestAsk']) < self.currentCandles[pair]['low']:
+			self.currentCandles[pair]['low'] = float(data['lowestAsk'])
 
-		if not 'average' in self.candle:
-			self.candle['average'] = float(data['last'])
+		if not 'open' in self.currentCandles[pair]:
+			self.currentCandles[pair]['open'] = float(data['last'])
+
+		if not 'average' in self.currentCandles[pair]:
+			self.currentCandles[pair]['average'] = float(data['last'])
 		else:
-			self.candle['average'] += float(data['last'])
+			self.currentCandles[pair]['average'] += float(data['last'])
 
-		self.candle['close'] = data['last']
+		self.currentCandles[pair]['close'] = data['last']
 
-		if not 'high' in self.candle:
-			self.candle['high'] = float(data['last'])
-		elif float(data['highestBid']) > self.candle['high']:
-			self.candle['high'] = float(data['highestBid'])
+		if not 'high' in self.currentCandles[pair]:
+			self.currentCandles[pair]['high'] = float(data['last'])
+		elif float(data['highestBid']) > self.currentCandles[pair]['high']:
+			self.currentCandles[pair]['high'] = float(data['highestBid'])
 
-		if not 'volume' in self.candle:
-			self.candle['volume'] = float(data['baseVolume'])
+		if not 'volume' in self.currentCandles[pair]:
+			self.currentCandles[pair]['volume'] = float(data['baseVolume'])
 		else:
-			self.candle['volume'] += float(data['baseVolume'])
+			self.currentCandles[pair]['volume'] += float(data['baseVolume'])
 
 		if data['isFrozen'] == "1":
-			self.candle['isFrozen'] = True
+			self.currentCandles[pair]['isFrozen'] = True
 		else:
-			self.candle['isFrozen'] = False
+			self.currentCandles[pair]['isFrozen'] = False
 
 		self.secondsPassed += 1
