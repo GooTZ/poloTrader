@@ -3,6 +3,10 @@ config.toml
 *.swp
 data/
 
+app/strategies/*
+!app/strategies/BaseStrategy.py
+!app/strategies/MovingAverages.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
