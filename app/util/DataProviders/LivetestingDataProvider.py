@@ -21,6 +21,7 @@ class LivetestingDataProvider(DataProvider):
 		t = int(time.time())
 		for pair in tickerData:
 			self.appendToCandle(t, pair, tickerData[pair])
+		self.secondsPassed += 1
 
 		if not (self.orderQueue.empty()):
 			order = self.orderQueue.get()
@@ -31,7 +32,6 @@ class LivetestingDataProvider(DataProvider):
 			return # next iteration if not enough time passed
 		self.timeOfLastTickFetch = timeofThisLoop
 
-		print("appending data1")
 		self.appendCandlesToData()
 		self.currentCandles = {}
 

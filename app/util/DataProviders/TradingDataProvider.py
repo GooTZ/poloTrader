@@ -20,6 +20,7 @@ class TradingDataProvider(LivetestingDataProvider):
 		t = int(time.time())
 		for pair in tickerData:
 			self.appendToCandle(t, pair, tickerData[pair])
+		self.secondsPassed += 1
 
 		balances = self.polo.returnBalances()
 		self.dataQueue.put(("Balances", balances))
@@ -33,7 +34,6 @@ class TradingDataProvider(LivetestingDataProvider):
 			return # next iteration if not enough time passed
 		self.timeOfLastTickFetch = timeofThisLoop
 
-		print("appending data1")
 		self.appendCandlesToData()
 		self.currentCandles = {}
 

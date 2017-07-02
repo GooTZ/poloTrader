@@ -162,5 +162,3 @@ class DataProvider(Thread):
 			self.currentCandles[pair]['isFrozen'] = True
 		else:
 			self.currentCandles[pair]['isFrozen'] = False
-
-		self.secondsPassed += 1
