@@ -41,7 +41,6 @@ class TradingDataProvider(DataProvider):
         outrDict = {}
         for pair in self.currentCandles:
             candle = self.currentCandles[pair]
-            print(candle['average'])
             dataDict = {'date': candle['date'], 'low': candle['low'], 'open': candle['open'], 'average': candle['average'] / self.secondsPassed,
             'close': candle['close'], 'high': candle['high'], 'volume': candle['volume'] / self.secondsPassed, 'isFrozen': candle['isFrozen']}
             outrDict[pair] = dataDict
