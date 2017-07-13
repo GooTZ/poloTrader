@@ -11,6 +11,7 @@ from app.util.DataProviders.DataProvider import DataProvider
 from app.util.DataProviders.TestingDataProvider import TestingDataProvider
 from app.util.DataProviders.LivetestingDataProvider import LivetestingDataProvider
 from app.util.DataProviders.HistoryDataProvider import HistoryDataProvider
+from app.util.DataProviders.TradingDataProvider import TradingDataProvider
 from app.util.StrategyManager import StrategyManager
 from app.util.Error import *
 
